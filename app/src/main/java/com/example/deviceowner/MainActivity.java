@@ -99,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
 					public void onClick(final View v) {
 						if (mAdministrationModeManager.isAdministrator() &&
 								mAdministrationModeManager.isDeviceOwner()) {
-							mAppTitleTextView.setChecked(!mAppTitleTextView.isChecked());
 							if (mAppTitleTextView.isChecked()) {
 								mAppsManager.hideApp(mAppsList.get(getAdapterPosition()));
 							} else {
 								mAppsManager.showApp(mAppsList.get(getAdapterPosition()));
 							}
+							notifyDataSetChanged();
 						}
 					}
 				});
