@@ -42,7 +42,7 @@ public class ObservableValue<T> implements Observable<ValueObserver<T>> {
 		}
 
 		mValue = value;
-
+		notifyChanged();
 	}
 
 	private void notifyChanged() {

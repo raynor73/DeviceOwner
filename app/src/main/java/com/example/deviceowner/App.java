@@ -7,6 +7,7 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 
+		AdministrationModeManager.createInstance(this);
 		AppsManager.createInstance(this);
 		AppsManager.getInstance().reloadApps();
 	}

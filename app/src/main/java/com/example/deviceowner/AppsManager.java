@@ -1,6 +1,7 @@
 package com.example.deviceowner;
 
 import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ public class AppsManager {
 
 	private final Context mContext;
 	private final DevicePolicyManager mDevicePolicyManager;
+	private final ComponentName mAdminComponent;
 
 	private final ObservableValue<State> mStateObservable = new ObservableValue<>(State.IDLE, true);
 
@@ -34,6 +36,7 @@ public class AppsManager {
 	private AppsManager(final Context context) {
 		mContext = context;
 		mDevicePolicyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+		mAdminComponent = AdministrationModeManager.getInstance().getAdminComponent();
 	}
 
 	public void reloadApps() {
@@ -51,17 +54,20 @@ public class AppsManager {
 			return;
 		}
 
-		mDevicePolicyManager.setApplicationHidden(AdministrationModel.deviceAdminComponent, app.packageName, false);
+		mDevicePolicyManager.setApplicationHidden(mAdminComponent, app.packageName, false);
 	}
 
-	/*fun hideApp(app: ApplicationInfo) {
-		if (state != State.IDLE)
-			return
+	public void hideApp(final ApplicationInfo app) {
+		if (mStateObservable.getValue() != State.IDLE) {
+			return;
+		}
 
-					devicePolicyManager
-							.setApplicationHidden(AdministrationModel.deviceAdminComponent, app.packageName, true)
-		observable.notifyModelChanged()
-	}*/
+		mDevicePolicyManager.setApplicationHidden(mAdminComponent, app.packageName, true);
+	}
+
+	public boolean isAppHidden(final ApplicationInfo app) {
+		return mDevicePolicyManager.isApplicationHidden(mAdminComponent, app.packageName);
+	}
 
 	public Observable<ValueObserver<State>> getStateObservable() {
 		return mStateObservable;
